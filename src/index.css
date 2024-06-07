@@ -386,6 +386,22 @@ body::-webkit-scrollbar {
   margin-right: 13px;
 }
 
+.job-item__badge--color0 {
+  background-color: #8dd335;
+}
+
+.job-item__badge--color1 {
+  background-color: #3D87F1;
+}
+
+.job-item__badge--color2 {
+  background-color: #D2D631;
+}
+
+.job-item__badge--color3 {
+  background-color: #D96A46;
+}
+
 /* .job-item:nth-child(4n + 2) .job-item__badge {
   background-color: #3d87f1;
 }
@@ -811,7 +827,7 @@ body::-webkit-scrollbar {
 .job-info__badge {
   width: 55px;
   height: 70px;
-  background-color: #d0d335;
+  /* background-color: #d0d335; */
   border-radius: 5px;
   display: flex;
   align-items: center;
@@ -819,6 +835,22 @@ body::-webkit-scrollbar {
   font-size: 22px;
   font-weight: 600;
   margin-bottom: 13px;
+}
+
+.job-info__badge--color0 {
+  background-color: #8dd335;
+}
+
+.job-info__badge--color1 {
+  background-color: #3D87F1;
+}
+
+.job-info__badge--color2 {
+  background-color: #D2D631;
+}
+
+.job-info__badge--color3 {
+  background-color: #D96A46;
 }
 
 .job-info__below-badge {

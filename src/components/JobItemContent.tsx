@@ -25,7 +25,7 @@ export default function JobItemContent() {
 
         <section className="job-info">
           <div className="job-info__left">
-            <div className="job-info__badge">{jobItem.badgeLetters}</div>
+            <div className={`job-info__badge job-info__badge--color${jobItem.id % 10 % 4}`}>{jobItem.badgeLetters}</div>
             <div className="job-info__below-badge">
               <time className="job-info__time">{jobItem.daysAgo}</time>
 

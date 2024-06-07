@@ -10,7 +10,7 @@ export default function JobListItem({ jobItem, isActive }: JobListItemProps) {
   return (
     <li className={`job-item ${isActive && "job-item--active"}`}>
       <a href={`#${jobItem.id}`} className="job-item__link">
-        <div className="job-item__badge">{jobItem.badgeLetters}</div>
+        <div className={`job-item__badge job-item__badge--color${jobItem.id % 10 % 4}`}>{jobItem.badgeLetters}</div>
 
         <div className="job-item__middle">
           <h3 className="third-heading">{jobItem.title}</h3>
