@@ -26,21 +26,19 @@ const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
 };
 
 export function useJobItem(id: number | null) {
-  const { data, isInitialLoading } = useQuery(
-    ["job-item", id],
-    () => (id ? fetchJobItem(id) : null),
-    {
-      staleTime: 1000 * 60 * 60,
-      refetchOnWindowFocus: false,
-      retry: false,
-      enabled: Boolean(id),
-      onError: handleError,
-    }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ["job-item", id],
+    queryFn: () => (id ? fetchJobItem(id) : null),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    retry: false,
+    enabled: Boolean(id),
+    // onError: handleError,
+  });
 
   return {
     jobItem: data?.jobItem,
-    isLoading: isInitialLoading,
+    isLoading: isLoading,
   } as const;
 }
 
@@ -89,21 +87,19 @@ const fetchJobItems = async (
 };
 
 export function useSearchQuery(searchText: string) {
-  const { data, isInitialLoading } = useQuery(
-    ["job-items", searchText],
-    () => fetchJobItems(searchText),
-    {
-      staleTime: 1000 * 60 * 60,
-      refetchOnWindowFocus: false,
-      retry: false,
-      enabled: Boolean(searchText),
-      onError: handleError,
-    }
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ["job-items", searchText],
+    queryFn: () => fetchJobItems(searchText),
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+    retry: false,
+    enabled: Boolean(searchText),
+    // onError: handleError,
+  });
 
   return {
     jobItems: data?.jobItems,
-    isLoading: isInitialLoading,
+    isLoading: isLoading,
   } as const;
 }
 
@@ -165,9 +161,7 @@ export function useOnClickOutside(
 ) {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (
-        refs.every((ref) => !ref.current?.contains(e.target as Node))
-      ) {
+      if (refs.every((ref) => !ref.current?.contains(e.target as Node))) {
         handler();
       }
     };
