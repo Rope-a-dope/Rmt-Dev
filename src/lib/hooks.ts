@@ -1,12 +1,9 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useJobItemsActions } from "../stores/jobItemsStore";
 import { BASE_API_URL } from "./constants";
 import { JobItem, JobItemExpanded } from "./types";
 import { handleError } from "./utils";
-import { BookmarksContext } from "../contexts/BookmarksContextProvider";
-import { ActiveIdContext } from "../contexts/ActiveIdContextProvider";
-import { SearchTextContext } from "../contexts/SearchTextContextProvider";
-import { JobItemsContext } from "../contexts/JobItemsContextProvider";
 
 type JobItemApiResponse = {
   public: boolean;
@@ -33,7 +30,6 @@ export function useJobItem(id: number | null) {
     refetchOnWindowFocus: false,
     retry: false,
     enabled: Boolean(id),
-    // onError: handleError,
   });
 
   return {
@@ -87,6 +83,8 @@ const fetchJobItems = async (
 };
 
 export function useSearchQuery(searchText: string) {
+  const { setJobItems } = useJobItemsActions();
+
   const { data, isLoading } = useQuery({
     queryKey: ["job-items", searchText],
     queryFn: () => fetchJobItems(searchText),
@@ -94,24 +92,17 @@ export function useSearchQuery(searchText: string) {
     refetchOnWindowFocus: false,
     retry: false,
     enabled: Boolean(searchText),
-    // onError: handleError,
   });
 
-  return {
-    jobItems: data?.jobItems,
-    isLoading: isLoading,
-  } as const;
-}
-
-export function useDebounce<T>(value: T, delay = 500): T {
-  const [debouncedValue, setDebouncedValue] = useState(value);
   useEffect(() => {
-    const timerId = setTimeout(() => setDebouncedValue(value), delay);
+    if (data?.jobItems) {
+      setJobItems(data.jobItems);
+    }
+  }, [data?.jobItems, setJobItems]);
 
-    return () => clearTimeout(timerId);
-  }, [value, delay]);
-
-  return debouncedValue;
+  return {
+    isLoading,
+  };
 }
 
 export function useActiveId() {
@@ -134,27 +125,6 @@ export function useActiveId() {
   return activeId;
 }
 
-export function useLocalStorage<T>(
-  key: string,
-  initialValue: T
-): {
-  value: T;
-  setValue: React.Dispatch<React.SetStateAction<T>>;
-} {
-  const [value, setValue] = useState(() =>
-    JSON.parse(localStorage.getItem(key) || JSON.stringify(initialValue))
-  );
-
-  useEffect(() => {
-    localStorage.setItem(key, JSON.stringify(value));
-  }, [value, key]);
-
-  return {
-    value,
-    setValue,
-  } as const;
-}
-
 export function useOnClickOutside(
   refs: React.RefObject<HTMLElement>[],
   handler: () => void
@@ -169,44 +139,4 @@ export function useOnClickOutside(
     document.addEventListener("click", handleClick);
     return () => document.removeEventListener("click", handleClick);
   }, [refs, handler]);
-}
-
-export function useBookmarksContext() {
-  const context = useContext(BookmarksContext);
-  if (!context) {
-    throw new Error(
-      "useBookmarksContext must be used within a BookmarksContextProvider"
-    );
-  }
-  return context;
-}
-
-export function useActiveIdContext() {
-  const context = useContext(ActiveIdContext);
-  if (!context) {
-    throw new Error(
-      "useActiveIdContext must be used within a ActiveIdContextProvider"
-    );
-  }
-  return context;
-}
-
-export function useSearchTextContext() {
-  const context = useContext(SearchTextContext);
-  if (!context) {
-    throw new Error(
-      "useSearchTextContext must be used within a SearchTextContextProvider"
-    );
-  }
-  return context;
-}
-
-export function useJobItemsContext() {
-  const context = useContext(JobItemsContext);
-  if (!context) {
-    throw new Error(
-      "useJobItemsContext must be used within a JobItemsContextProvider"
-    );
-  }
-  return context;
 }
